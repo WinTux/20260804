@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Principal.Repositories;
+using AutoMapper;
 
 namespace Principal
 {
@@ -12,7 +14,9 @@ namespace Principal
 
             builder.Services.AddControllers();
             builder.Services.AddScoped<IProgramadorRepository, ImplProgramadorRepository>();
-
+            builder.Services.AddDbContext<PrincipalDbContext>(o =>
+                o.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
