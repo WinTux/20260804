@@ -9,6 +9,8 @@ namespace Principal.Perfiles
         public ProgramadorPerfil()
         {
             CreateMap<Programador, ProgramadorReadDTO>(); // ---->
+            CreateMap<ProgramadorCreateDTO, Programador>();
+            CreateMap<ProgramadorUpdateDTO, Programador>();
         }
     }
 }

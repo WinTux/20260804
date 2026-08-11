@@ -6,5 +6,9 @@ namespace Principal.Repositories
     {
         IEnumerable<Programador> GetProgramadores();
         Programador GetProgramadorById(int id);
+        void AddProgramador(Programador prog);
+        void UpdateProgramador(Programador prog);
+        void DeleteProgramador(int id);
+        public bool Guardar();
     }
 }

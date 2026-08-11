@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Principal.DTO;
 using Principal.Models;
 using Principal.Repositories;
 
@@ -10,22 +12,45 @@ namespace Principal.Controllers
     public class ProgramadorController : ControllerBase
     {
         private readonly IProgramadorRepository repo;
-        public ProgramadorController(IProgramadorRepository repo)
+        private readonly IMapper mapper;
+        public ProgramadorController(IProgramadorRepository repo, IMapper mapper)
         {
             this.repo = repo;
+            this.mapper = mapper;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Programador>> GetProgramadores() {
+        public ActionResult<IEnumerable<ProgramadorReadDTO>> GetProgramadores() {
             var progs = repo.GetProgramadores();
-            return Ok(progs);
+            return Ok(mapper.Map<IEnumerable<ProgramadorReadDTO>>(progs));
         }
-        [HttpGet("{id}")]
-        public ActionResult<Programador> GetProgramadorById(int id)
+        [HttpGet("{id}", Name = "GetProgramadorById")]
+        public ActionResult<ProgramadorReadDTO> GetProgramadorById(int id)
         {
-            var prog = repo.GetProgramadorById(id);
+            Programador prog = repo.GetProgramadorById(id);
             if (prog == null)
                 return NotFound();
-            return Ok(prog);
+            return Ok(mapper.Map<ProgramadorReadDTO>(prog));
+        }
+        [HttpPost]
+        public ActionResult<ProgramadorReadDTO> CreateProgramador([FromBody] ProgramadorCreateDTO dto)
+        {
+            Programador prog = mapper.Map<Programador>(dto);
+            repo.AddProgramador(prog);
+            if (!repo.Guardar())
+                return BadRequest();
+            return CreatedAtRoute(nameof(GetProgramadorById), new { id = prog.id }, mapper.Map<ProgramadorReadDTO>(prog));
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateProgramador(int id, [FromBody] ProgramadorUpdateDTO dto) {
+            Programador prog = repo.GetProgramadorById(id);
+            if (prog == null)
+                return NotFound();
+            mapper.Map(dto, prog);
+            repo.UpdateProgramador(prog);
+            if (!repo.Guardar())
+                return BadRequest();
+            return Ok(mapper.Map<ProgramadorReadDTO>(prog));
         }
     }
 }

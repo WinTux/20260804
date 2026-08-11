@@ -9,6 +9,19 @@ namespace Principal.Repositories
         {
             this.context = context;
         }
+
+        public void AddProgramador(Programador prog)
+        {
+            if(prog == null)
+                throw new ArgumentNullException(nameof(prog));
+            context.Programadores.Add(prog);
+        }
+
+        public void DeleteProgramador(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Programador GetProgramadorById(int id)
         {
             return context.Programadores.FirstOrDefault(p => p.id == id);
@@ -17,6 +30,16 @@ namespace Principal.Repositories
         public IEnumerable<Programador> GetProgramadores()
         {
             return context.Programadores.ToList();
+        }
+
+        public bool Guardar()
+        {
+            return context.SaveChanges() >= 0;
+        }
+
+        public void UpdateProgramador(Programador prog)
+        {
+            //
         }
     }
 }
