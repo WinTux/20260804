@@ -8,7 +8,7 @@ namespace Principal.Repositories
         Programador GetProgramadorById(int id);
         void AddProgramador(Programador prog);
         void UpdateProgramador(Programador prog);
-        void DeleteProgramador(int id);
+        void DeleteProgramador(Programador prog);
         public bool Guardar();
     }
 }

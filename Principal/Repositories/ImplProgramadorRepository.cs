@@ -17,9 +17,11 @@ namespace Principal.Repositories
             context.Programadores.Add(prog);
         }
 
-        public void DeleteProgramador(int id)
+        public void DeleteProgramador(Programador prog)
         {
-            throw new NotImplementedException();
+            if (prog == null)
+                throw new ArgumentNullException(nameof(prog));
+            context.Programadores.Remove(prog);
         }
 
         public Programador GetProgramadorById(int id)

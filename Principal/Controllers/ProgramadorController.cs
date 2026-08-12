@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Principal.DTO;
 using Principal.Models;
@@ -51,6 +52,31 @@ namespace Principal.Controllers
             if (!repo.Guardar())
                 return BadRequest();
             return Ok(mapper.Map<ProgramadorReadDTO>(prog));
+        }
+
+        [HttpPatch("{id}")]
+        public ActionResult UpdateParcialProgramador(int id, JsonPatchDocument<ProgramadorUpdateDTO> progPatch) {
+            Programador prog = repo.GetProgramadorById(id);
+            if (prog == null)
+                return NotFound();
+            ProgramadorUpdateDTO progParaPatch = mapper.Map<ProgramadorUpdateDTO>(prog);
+            progPatch.ApplyTo(progParaPatch, ModelState);
+            if (!TryValidateModel(progParaPatch))
+                return ValidationProblem(ModelState);
+            mapper.Map(progParaPatch, prog);
+            repo.UpdateProgramador(prog);
+            repo.Guardar();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult EliminarProgramador(int id) {
+            Programador prog = repo.GetProgramadorById(id);
+            if (prog == null)
+                return NotFound();
+            repo.DeleteProgramador(prog);
+            repo.Guardar();
+            return NoContent();
         }
     }
 }

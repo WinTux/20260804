@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Principal.Repositories;
 using AutoMapper;
+using Newtonsoft.Json.Serialization;
 
 namespace Principal
 {
@@ -12,7 +13,9 @@ namespace Principal
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson(s => 
+                s.SerializerSettings.ContractResolver = 
+                new CamelCasePropertyNamesContractResolver());
             builder.Services.AddScoped<IProgramadorRepository, ImplProgramadorRepository>();
             builder.Services.AddDbContext<PrincipalDbContext>(o =>
                 o.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
