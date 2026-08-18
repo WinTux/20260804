@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: principal-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: principalservice
+  template:
+    metadata:
+      labels:
+        app: principalservice
+    spec:
+      containers:
+        - name: principalservice
+          image: rusok/principal:2.0
+          imagePullPolicy: IfNotPresent
