@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Campus/Campus.csproj" Id="58f9edf1-005e-4a26-a8e6-6dd0b6fd0dc6" />
   <Project Path="Principal/Principal.csproj" />
 </Solution>
