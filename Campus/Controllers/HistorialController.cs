@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Campus.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/c/[controller]")]
     [ApiController]
     public class HistorialController : ControllerBase
     {

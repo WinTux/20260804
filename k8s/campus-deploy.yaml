@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: principal-deploy
+  name: campus-deploy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: principalservice
+      app: campusservice
   template:
     metadata:
       labels:
-        app: principalservice
+        app: campusservice
     spec:
       containers:
-        - name: principalservice
-          image: rusok/principal:2.0
+        - name: campusservice
+          image: rusok/campus:1.0
           imagePullPolicy: IfNotPresent
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: principal-clusterip-service
+  name: campus-clusterip-service
 spec:
   type: ClusterIP
   selector:
-    app: principalservice
+    app: campusservice
   ports:
-    - name: principalservice
+    - name: campusservice
       protocol: TCP
       port: 8080
       targetPort: 8080

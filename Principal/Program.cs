@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Principal.Repositories;
 using AutoMapper;
 using Newtonsoft.Json.Serialization;
+using Principal.ComunicacionSync.http;
 
 namespace Principal
 {
@@ -20,6 +21,7 @@ namespace Principal
             builder.Services.AddDbContext<PrincipalDbContext>(o =>
                 o.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddHttpClient<ICampushistorialCliente, ImplCampusHistorialCliente>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

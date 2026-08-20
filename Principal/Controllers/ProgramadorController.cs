@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Principal.ComunicacionSync.http;
 using Principal.DTO;
 using Principal.Models;
 using Principal.Repositories;
@@ -14,10 +15,12 @@ namespace Principal.Controllers
     {
         private readonly IProgramadorRepository repo;
         private readonly IMapper mapper;
-        public ProgramadorController(IProgramadorRepository repo, IMapper mapper)
+        private readonly ICampushistorialCliente campushistorialCliente;
+        public ProgramadorController(IProgramadorRepository repo, IMapper mapper, ICampushistorialCliente campushistorialCliente)
         {
             this.repo = repo;
             this.mapper = mapper;
+            this.campushistorialCliente = campushistorialCliente;
         }
         [HttpGet]
         public ActionResult<IEnumerable<ProgramadorReadDTO>> GetProgramadores() {
@@ -33,12 +36,21 @@ namespace Principal.Controllers
             return Ok(mapper.Map<ProgramadorReadDTO>(prog));
         }
         [HttpPost]
-        public ActionResult<ProgramadorReadDTO> CreateProgramador([FromBody] ProgramadorCreateDTO dto)
+        public async Task<ActionResult<ProgramadorReadDTO>> CreateProgramador([FromBody] ProgramadorCreateDTO dto)
         {
             Programador prog = mapper.Map<Programador>(dto);
             repo.AddProgramador(prog);
             if (!repo.Guardar())
                 return BadRequest();
+            try
+            {
+                var prdto = mapper.Map<ProgramadorReadDTO>(prog);
+                await campushistorialCliente.ComunicarseConCampus(prdto);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al enviar el mensaje a Campushistorial: {ex.Message}");
+            }
             return CreatedAtRoute(nameof(GetProgramadorById), new { id = prog.id }, mapper.Map<ProgramadorReadDTO>(prog));
         }
 
