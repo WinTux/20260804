@@ -12,6 +12,7 @@ namespace Principal.Perfiles
             CreateMap<ProgramadorCreateDTO, Programador>();
             CreateMap<ProgramadorUpdateDTO, Programador>();
             CreateMap<Programador, ProgramadorUpdateDTO>();
+            CreateMap<ProgramadorReadDTO, ProgramadorPublisherDTO>();
         }
     }
 }

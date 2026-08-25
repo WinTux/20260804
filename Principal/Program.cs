@@ -3,6 +3,7 @@ using Principal.Repositories;
 using AutoMapper;
 using Newtonsoft.Json.Serialization;
 using Principal.ComunicacionSync.http;
+using Principal.ComunicacionAsync;
 
 namespace Principal
 {
@@ -22,6 +23,7 @@ namespace Principal
                 o.UseSqlServer(builder.Configuration.GetConnectionString("una_conexion")));
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             builder.Services.AddHttpClient<ICampushistorialCliente, ImplCampusHistorialCliente>();
+            builder.Services.AddSingleton<IBusDeMensajesCliente, ImplBusDeMensajesCliente>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

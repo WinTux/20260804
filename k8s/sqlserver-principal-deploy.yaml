@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: misqlserver
+  template:
+    metadata:
+      labels:
+        app: misqlserver
+    spec:
+      containers:
+        - name: misqlserver
+          image: mcr.microsoft.com/mssql/server:2025-latest
+          ports:
+            - containerPort: 1433
+          env:
+            - name: MSSQL_PID
+              value: "Express"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miqueridosqlserver
+                  key: SA_PASSWORD
+          volumeMounts:
+            - mountPath: /var/opt/mssql/data
+              name: midiminutopvc
+      volumes:
+        - name: midiminutopvc
+          persistentVolumeClaim:
+            claimName: pvc-sqlserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlserver-clusterip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: misqlserver
+  ports:
+    - name: misqlserver
+      protocol: TCP
+      port: 1433
+      targetPort: 1433
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlserver-loadbalancer-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: misqlserver
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433
