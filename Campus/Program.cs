@@ -1,3 +1,5 @@
+using Campus.Eventos;
+
 namespace Campus
 {
     public class Program
@@ -9,6 +11,7 @@ namespace Campus
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddSingleton<IProcesadorDeEventos, ProcesadorDeEventos>();
 
             var app = builder.Build();
 
